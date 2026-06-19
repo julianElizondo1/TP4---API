@@ -1,0 +1,60 @@
+﻿@page "/crear-post"
+@using TP4___API.Models
+@inject HttpClient Http
+
+<h3>Crear Post</h3>
+
+<div class="mb-3">
+    <label class="form-label">Título</label>
+    <input class="form-control"
+           @bind="nuevoPost.Title" />
+</div>
+
+<br />
+
+<textarea class="form-control"
+          rows="5"
+          @bind="nuevoPost.Body">
+</textarea>
+
+<br />
+
+<button @onclick="Crear" class="btn btn-success">
+    Crear
+</button>
+
+<p><strong>Estado:</strong> @statusCode</p>
+
+<p>@mensaje</p>
+
+<h4>Respuesta API</h4>
+
+<pre>@jsonRespuesta</pre>
+
+@code {
+
+    private Post nuevoPost = new();
+    private string mensaje = "";
+    private string statusCode = "";
+    private string jsonRespuesta = "";
+
+    private async Task Crear()
+    {
+        nuevoPost.UserId = 1;
+
+        var respuesta = await Http.PostAsJsonAsync("posts", nuevoPost);
+
+        statusCode = $"{(int)respuesta.StatusCode} - {respuesta.StatusCode}";
+
+        jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+
+        if (respuesta.IsSuccessStatusCode)
+        {
+            mensaje = "Post creado correctamente";
+        }
+        else
+        {
+            mensaje = "Error al crear el post";
+        }
+    }
+}

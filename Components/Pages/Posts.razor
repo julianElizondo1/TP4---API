@@ -1,0 +1,49 @@
+﻿@page "/posts"
+@using TP4___API.Models
+@inject HttpClient Http
+
+<div class="card">
+    <div class="card-header"> 
+        Listado de Posts
+    </div>
+
+@if (posts == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Título</th>
+                <th>Contenido</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in posts)
+            {
+                <tr>
+                    <td>@post.Id</td>
+                    <td>@post.Title</td>
+                    <td>@post.Body</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+}
+</div>
+
+@code {
+
+    private List<Post>? posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await Http.GetFromJsonAsync<List<Post>>("posts");
+    }
+
+}

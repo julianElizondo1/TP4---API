@@ -1,0 +1,68 @@
+﻿@page "/editar-post"
+@using TP4___API.Models
+@inject HttpClient Http
+
+<h3>Editar Post</h3>
+
+<div class="mb-3">
+    <label class="form-label">Id:</label><br />
+    <input class="form-control"
+        type="number" @bind="post.Id" />
+</div>
+
+<br />
+
+<div class="mb-3">
+    <label class="form-label">Título</label>
+    <input class="form-control"
+           @bind="post.Title" />
+</div>
+
+<br />
+
+<textarea class="form-control"
+          rows="5"
+          @bind="post.Body">
+</textarea>
+
+<br />
+
+<button class="btn btn-warning" @onclick="Editar">
+    Actualizar
+</button>
+
+<p><strong>Estado:</strong> @statusCode</p>
+
+<p>@mensaje</p>
+
+<h4>Respuesta API</h4>
+
+<pre>@jsonRespuesta</pre>
+
+@code {
+
+    private Post post = new();
+    private string mensaje = "";
+    private string statusCode = "";
+    private string jsonRespuesta = "";
+
+    private async Task Editar()
+    {
+        post.UserId = 1;
+
+        var respuesta = await Http.PutAsJsonAsync($"posts/{post.Id}", post);
+
+        statusCode = $"{(int)respuesta.StatusCode} - {respuesta.StatusCode}";
+
+        jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+
+        if (respuesta.IsSuccessStatusCode)
+        {
+            mensaje = $"Post {post.Id} actualizado correctamente";
+        }
+        else
+        {
+            mensaje = "Error al actualizar";
+        }
+    }
+}

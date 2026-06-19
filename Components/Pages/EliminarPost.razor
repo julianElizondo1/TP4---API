@@ -1,0 +1,55 @@
+﻿@page "/eliminar-post"
+@using TP4___API.Models
+@inject HttpClient Http
+
+<h3>Eliminar Post</h3>
+
+<div class="mb-3">
+    <label class="form-label">Id:</label><br />
+    <input class="form-control"
+           type="number" @bind="post.Id" />
+</div>
+
+
+<br />
+
+<button class="btn btn-danger" @onclick="Eliminar">
+    Eliminar
+</button>
+
+<p><strong>Estado:</strong> @statusCode</p>
+
+<p>@mensaje</p>
+
+@if (!string.IsNullOrEmpty(jsonRespuesta))
+{
+        <h4>Respuesta API</h4>
+
+        <pre>@jsonRespuesta</pre>
+}
+
+@code {
+
+    private Post post = new();
+    private string mensaje = "";
+    private string statusCode = "";
+    private string jsonRespuesta = "";
+
+    private async Task Eliminar()
+    {
+        var respuesta = await Http.DeleteAsync($"posts/{post.Id}");
+
+        statusCode = $"{(int)respuesta.StatusCode} - {respuesta.StatusCode}";
+
+        jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+
+        if (respuesta.IsSuccessStatusCode)
+        {
+            mensaje = $"Post {post.Id} eliminado correctamente";
+        }
+        else
+        {
+            mensaje = "Error al eliminar";
+        }
+    }
+}
